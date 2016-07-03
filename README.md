@@ -1,4 +1,6 @@
 # Dredd
+[![Coverage Status](https://coveralls.io/repos/github/fiunchinho/dredd/badge.svg?branch=master)](https://coveralls.io/github/fiunchinho/dredd?branch=master)
+
                           ______
                        ,-~   _  ^^~-.,
                      ,^        -,____ ^,         ,/\/\/\,

@@ -1,0 +1,7 @@
+nose2
+cov-core
+mock
+requests
+responses
+boto3
+coveralls
