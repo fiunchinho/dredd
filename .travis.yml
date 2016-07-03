@@ -1,0 +1,26 @@
+python: 3.5
+env:
+  matrix:
+    - TOX_ENV=pep8
+    - TOX_ENV=py26
+    - TOX_ENV=py27
+    - TOX_ENV=py32
+    - TOX_ENV=py33
+    - TOX_ENV=py34
+    - TOX_ENV=py35
+    - TOX_ENV=pypy
+    - TOX_ENV=pypy3
+matrix:
+  allow_failures:
+    - env: TOX_ENV=pep8
+cache:
+  pip: true
+  directories:
+    - $HOME/.cache
+install: pip install --user -r requirements-test.txt
+script:
+  - tox -v -v -e $TOX_ENV
+after_failure:
+  - for X in .tox/$TOX_ENV/log/*; do echo "$X\n"; cat "$X"; echo "\n\n"; done
+after_success:
+  coveralls

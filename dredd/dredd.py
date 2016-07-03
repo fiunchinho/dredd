@@ -1,93 +1,55 @@
-import requests
-import boto3
+from cloud.noop import NoOp
+from suspect import Suspect
+
 import logging
-import time
-import argparse
 
 
-def build_eureka_url(region, url, ssl=False):
-    if ssl:
-        return 'https://' + region + '.' + url + '/v2/apps'
-    else:
-        return 'http://' + region + '.' + url + '/v2/apps'
+class Dredd(object):
+    def __init__(self, cloud=NoOp(), max_crimes=3):
+        self.instances = []
+        self.suspects = []
+        self.cloud = cloud
+        self.max_crimes = max_crimes
 
+    def patrol(self, instances):
+        for instance in instances:
+            if instance.status == 'healthy':
+                self._absolve_recovered_suspects(instance)
+            if instance.status == 'unhealthy':
+                self._arrest(instance)
 
-def get_instances(url):
-    r = requests.get(url, headers={'Accept': 'application/json'})
-    applications = r.json()['applications']['application']
+        self._judge_suspects_crimes()
 
-    instances = []
+    def punish(self, instance):
+        self.cloud.terminate(instance_id=instance.id)
 
-    for application in applications:
-        for instance in application['instance']:
-            metadata = instance.get('dataCenterInfo').get('metadata')
-            if metadata:
-                instance_id = metadata.get('instance-id')
-            else:
-                instance_id = None
-            name = instance.get('vipAddress')
-            dns = instance.get('hostName')
-            asg = instance.get('asgName', None)
-            status = instance.get('status')
-            instances.append({'id': instance_id, 'name': name, 'dns': dns, 'asg': asg, 'status': status})
+    def getsuspects(self):
+        return self.suspects
 
-    return instances
-
-
-def is_suspicious(instance_id, instances):
-    return next((instance for instance in instances if instance['instance'] == instance_id), None)
-
-
-def absolve_healthy_instances(instances, suspicious_instances):
-    healthy_instances = [instance for instance in instances if instance['status'] == 'UP']
-    return [instance for instance in suspicious_instances if instance not in healthy_instances]
-
-
-def arrest_unhealthy_instances(instances, criminal_records):
-    unhealthy_instances = [instance for instance in instances if instance['status'] == 'DOWN']
-    for instance in unhealthy_instances:
-        logger.info("Checking instance: %s" % instance)
-        suspect_crimes = is_suspicious(instance['id'], criminal_records)
-        if suspect_crimes:
-            judge_suspect_crimes(suspect_crimes)
+    def _arrest(self, instance):
+        reoffending_suspect = self._is_reoffending(instance)
+        if reoffending_suspect:
+            reoffending_suspect.failures += 1
+            logging.getLogger(__name__).info("Increasing failures of instance %s (%s)" % (instance.id,
+                                                                                          reoffending_suspect.failures))
         else:
-            criminal_records.append({'instance': instance['id'], 'crimes': 1})
+            logging.getLogger(__name__).info("First failure of instance %s" % instance.id)
+            self.suspects.append(Suspect(instance, 1))
 
+    def _is_reoffending(self, instance):
+        found_suspect = None
+        for suspect in self.suspects:
+            if suspect.instance.id == instance.id:
+                found_suspect = suspect
+                break
+        return found_suspect
 
-def judge_suspect_crimes(suspect):
-    suspect['crimes'] += 1
-    if suspect['crimes'] >= 3:
-        logger.info("Killing machine: %s" % suspect)
-        # punish(suspect)
+    def _absolve_recovered_suspects(self, instance):
+        logging.getLogger(__name__).info("Removing instance %s with status %s from suspects" % (instance.id,
+                                                                                                instance.status))
+        self.suspects = filter(lambda x: x.instance.id is not instance.id, self.suspects)
 
-
-def punish(suspect):
-    client.set_instance_health(
-        InstanceId=suspect['id'],
-        HealthStatus='Unhealthy',
-        ShouldRespectGracePeriod=True
-    )
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-r','--region', help='AWS Region', default='eu-west-1')
-    parser.add_argument('-e','--eureka-url', help='Eureka endpoint', required=True)
-    args = parser.parse_args()
-
-    logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
-    ch = logging.StreamHandler()
-    logger.addHandler(ch)
-
-    client = boto3.client('autoscaling', region_name=args.region)
-    criminal_record = []
-
-    while True:
-        instances = get_instances(build_eureka_url(args.region, args.eureka_url))
-        absolve_healthy_instances(instances, criminal_record)
-        arrest_unhealthy_instances(instances, criminal_record)
-
-        duration = 3
-        logger.info("Sleeping for %s seconds" % duration)
-        time.sleep(duration)
+    def _judge_suspects_crimes(self):
+        for suspect in self.suspects:
+            if suspect.failures >= self.max_crimes:
+                self.punish(suspect.instance)

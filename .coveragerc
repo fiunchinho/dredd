@@ -1,0 +1,15 @@
+[run]
+branch = True
+cover_pylib = False
+data_file = .coverage
+source = dredd
+include = dredd/*
+omit = dredd/tests/*
+       test_*.*
+       */__init__.py
+
+[report]
+show_missing = True
+
+[html]
+directory = htmlcov
