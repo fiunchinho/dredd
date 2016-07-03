@@ -15,8 +15,7 @@ cache:
   pip: true
   directories:
     - $HOME/.cache
-install:
-  - pip install coveralls
+install: pip install --user -r requirements-test.txt
 script:
   - tox -v -v -e $TOX_ENV
 after_failure:
