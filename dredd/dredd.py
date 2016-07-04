@@ -1,4 +1,5 @@
 from cloud.noop import NoOp
+from instance import Instance
 from suspect import Suspect
 
 import logging
@@ -13,9 +14,10 @@ class Dredd(object):
 
     def patrol(self, instances):
         for instance in instances:
-            if instance.status == 'healthy':
+            logging.getLogger(__name__).debug("Instance %s is %s" % (instance.id, instance.status))
+            if instance.status == Instance.STATUS_UP:
                 self._absolve_recovered_suspects(instance)
-            if instance.status == 'unhealthy':
+            if instance.status == Instance.STATUS_DOWN:
                 self._arrest(instance)
 
         self._judge_suspects_crimes()
@@ -45,7 +47,7 @@ class Dredd(object):
         return found_suspect
 
     def _absolve_recovered_suspects(self, instance):
-        logging.getLogger(__name__).info("Removing instance %s with status %s from suspects" % (instance.id,
+        logging.getLogger(__name__).debug("Removing instance %s with status %s from suspects" % (instance.id,
                                                                                                 instance.status))
         self.suspects = filter(lambda x: x.instance.id is not instance.id, self.suspects)
 
