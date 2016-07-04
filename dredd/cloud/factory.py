@@ -1,7 +1,7 @@
 import boto3
 
-from dredd.cloud.aws import Aws
-from dredd.cloud.noop import NoOp
+from aws import Aws
+from noop import NoOp
 
 
 class Factory(object):
