@@ -1,3 +1,5 @@
+import logging
+
 import requests
 
 from dredd.instance import Instance
@@ -16,10 +18,17 @@ class Eureka(object):
         for application in applications:
             for instance in application['instance']:
                 metadata = instance.get('dataCenterInfo').get('metadata')
+                if not metadata:
+                    instance_id = instance.get('instanceId')
+                    if not instance_id:
+                        logging.getLogger(__name__).warn("Instance %s has no id or metadata. Skipping..." % instance.id)
+                        continue
+                else:
+                    instance_id = metadata.get('instance-id')
 
                 instances.append(
                     Instance(
-                        id=metadata.get('instance-id'),
+                        id=instance_id,
                         name=instance.get('vipAddress'),
                         dns=instance.get('hostName'),
                         asg=instance.get('asgName', None),

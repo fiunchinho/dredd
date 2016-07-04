@@ -6,7 +6,7 @@ from dredd.discovery.eureka import Eureka
 
 class EurekaTest(TestCase):
     @responses.activate
-    def test_mark_unhealthy_as_suspicious(self):
+    def test_transform_eureka_api_response_to_instances(self):
         with open('tests/discovery/eureka_response.json', 'r') as response_file:
             response_body = response_file.read()
 
@@ -19,7 +19,7 @@ class EurekaTest(TestCase):
         eureka = Eureka('http://some_url')
         instances = eureka.instances()
 
-        assert len(instances) == 8
+        assert len(instances) == 9
 
         assert instances[0].id == "i-7eacfff4"
         assert instances[0].name == "eureka"
