@@ -20,11 +20,13 @@ setup(
     packages=find_packages('.'),
     include_package_data=True,
     url='https://github.com/fiunchinho/dredd',
-    description='Terminate healthy instances with unhealthy services',
+    description='Terminate healthy instances containing unhealthy services',
     long_description=long_description,
     license='GPLv2',
     install_requires=open('requirements.txt').read().split(),
-    scripts=['bin/dredd.py'],
+    entry_points={
+        "console_scripts": ["dredd = dredd.cli:main"]
+    },
     classifiers=[],
     keywords='eureka consul aws'
 )
