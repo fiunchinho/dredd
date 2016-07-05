@@ -21,7 +21,8 @@ class Eureka(object):
                 if not metadata:
                     instance_id = instance.get('instanceId')
                     if not instance_id:
-                        logging.getLogger(__name__).warn("Instance %s has no id or metadata. Skipping..." % instance.id)
+                        logging.getLogger(__name__).warn(
+                            "Instance %s has no id or metadata. Skipping..." % instance.get('vipAddress'))
                         continue
                 else:
                     instance_id = metadata.get('instance-id')

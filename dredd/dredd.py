@@ -48,7 +48,7 @@ class Dredd(object):
 
     def _absolve_recovered_suspects(self, instance):
         logging.getLogger(__name__).debug("Removing instance %s with status %s from suspects" % (instance.id,
-                                                                                                instance.status))
+                                                                                                 instance.status))
         self.suspects = filter(lambda x: x.instance.id is not instance.id, self.suspects)
 
     def _judge_suspects_crimes(self):
