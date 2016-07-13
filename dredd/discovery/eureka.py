@@ -31,7 +31,7 @@ class Eureka(object):
                     Instance(
                         id=instance_id,
                         name=instance.get('vipAddress'),
-                        dns=instance.get('hostName'),
+                        address=instance.get('hostName'),
                         asg=instance.get('asgName', None),
                         status=instance.get('status')
                     )
