@@ -25,10 +25,30 @@
        +     \ |=~T  !       Y    [|()  \ ,'  / -naughty
 
 
-Dredd is a law enforcement officer in the dystopian future city of Amazon Web Services. He is a street judge, empowered to summarily arrest, convict, sentence, and terminate EC2 unhealthy instances.
+Dredd is a law enforcement officer in the dystopian future city of *Amazon Web Services*. He is a street judge, empowered to summarily arrest, convict, sentence, and terminate EC2 unhealthy instances.
 
 ## Motivation
-Amazon Auto Scaling Groups automatically replace instances marked as unhealthy from your cluster with fresh and new healthy instances, but it only allow you to define healthchecks based on EC2 healthcheck or ELB healtcheck.
-The problem with EC2 healthcheck is that the instance could be running fine, but the service inside stopped for whatever reason. In that case, the Auto Scaling Group will never notice it, so it'll never replace this unhealthy instance.
+Amazon Auto Scaling Groups automatically replace instances marked as unhealthy from your cluster with fresh and new healthy instances, but it only allows you to define health checks based on EC2 the health check or the ELB health check.
+The problem with the EC2 health check is that the instance could be running fine, but the service inside has stopped for whatever reason. In that case, the Auto Scaling Group will never notice it, so it'll never replace this unhealthy instance.
 
-You can solve this with ELB healthchecks, but you have to pay for each ELB.
+You can solve this with ELB health checks, but you have to pay for each ELB.
+
+## Installation
+You can install this module using pip
+
+```bash
+pip install git+https://github.com/fiunchinho/dredd.git
+```
+
+## Usage
+
+```bash
+$ dredd -u eureka -e "http://your-eureka-host.com:8080/eureka-server/v2/apps"
+```
+
+## Tests
+You can run the unit tests using tox
+
+```bash
+$ tox
+```
