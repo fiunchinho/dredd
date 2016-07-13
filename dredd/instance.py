@@ -2,9 +2,8 @@ class Instance(object):
     STATUS_UP = "UP"
     STATUS_DOWN = "DOWN"
 
-    def __init__(self, id, name, dns, asg, status):
+    def __init__(self, id, name, address, status):
         self.id = id
         self.name = name
-        self.dns = dns
-        self.asg = asg
+        self.address = address
         self.status = status
