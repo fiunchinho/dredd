@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/fiunchinho/dredd.svg?branch=master)](https://travis-ci.org/fiunchinho/dredd)
 [![Coverage Status](https://coveralls.io/repos/github/fiunchinho/dredd/badge.svg?branch=master)](https://coveralls.io/github/fiunchinho/dredd?branch=master)
 [![Code Health](https://landscape.io/github/fiunchinho/dredd/master/landscape.svg?style=flat)](https://landscape.io/github/fiunchinho/dredd/master)
+[![](https://images.microbadger.com/badges/version/fiunchinho/dredd.svg)](http://microbadger.com/#/images/fiunchinho/dredd "Get your own version badge on microbadger.com")
 
                           ______
                        ,-~   _  ^^~-.,

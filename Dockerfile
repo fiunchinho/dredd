@@ -2,7 +2,7 @@ FROM alpine:3.4
 
 MAINTAINER Jose Armesto <jose@armesto.net>
 
-ARG vcs_type="Unknown"
+ARG vcs_type="Git"
 ARG vcs_url="Unknown"
 ARG vcs_ref="Unknown"
 ARG vcs_branch="Unknown"
