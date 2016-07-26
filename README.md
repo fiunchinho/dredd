@@ -1,6 +1,7 @@
 # Dredd
 [![Build Status](https://travis-ci.org/fiunchinho/dredd.svg?branch=master)](https://travis-ci.org/fiunchinho/dredd)
 [![Coverage Status](https://coveralls.io/repos/github/fiunchinho/dredd/badge.svg?branch=master)](https://coveralls.io/github/fiunchinho/dredd?branch=master)
+[![Code Health](https://landscape.io/github/fiunchinho/dredd/master/landscape.svg?style=flat)](https://landscape.io/github/fiunchinho/dredd/master)
 
                           ______
                        ,-~   _  ^^~-.,
